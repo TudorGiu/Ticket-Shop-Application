@@ -1,0 +1,53 @@
+https://dbdiagram.io/d
+
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table order_details{
+  order_id integer [primary key]
+  ticket_id integer [primary key]
+  amount integer
+}
+
+Table orders {
+  id integer [primary key]
+  user_id integer
+  total_price float
+  order_date date
+}
+
+Table users {
+  id integer [primary key]
+  first_name varchar
+  last_name varchar
+  email varchar
+  age varchar
+  password varchar
+}
+
+Table events {
+  id integer [primary key]
+  title varchar
+  date date
+  location varchar
+  age_limit integer
+}
+
+Table tickets{
+  id integer [primary key]
+  event_id integer
+  ticket_type_name varchar
+  price float
+}
+
+Table discount_codes{
+  id integer [primary key]
+  event_id integer
+  code varchar
+}
+
+Ref: discount_codes.event_id > events.id // many-to-one
+Ref: tickets.event_id > events.id
+Ref: orders.user_id > users.id
+Ref: order_details.order_id > orders.id
+Ref: order_details.ticket_id > tickets.id
