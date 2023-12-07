@@ -31,6 +31,7 @@ public class User {
     @Column(name="is_admin")
     private Boolean isAdmin;
 
+    // required by JPA (implemented by Hibernate)
     public User(){
 
     }

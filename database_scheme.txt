@@ -42,11 +42,11 @@ Table tickets{
 
 Table discount_codes{
   id integer [primary key]
-  event_id integer
+  ticket_id integer
   code varchar
 }
 
-Ref: discount_codes.event_id > events.id // many-to-one
+Ref: discount_codes.ticket_id > tickets.id // many-to-one
 Ref: tickets.event_id > events.id
 Ref: orders.user_id > users.id
 Ref: order_details.order_id > orders.id

@@ -1,7 +1,0 @@
-1. Be able to log in with a password and a username / or without them, as a guest
-2. Be able to log in as a client/administrator
-3. As an administrator, be able to add events and tickets (with prices, discounts, date and location)
-4. As a client, be able to add tickets to your basket. Then be able to place an order with the items in the basket.
-5. As any type of user, be able to visit the site and search for events.
-6. As any type of user, be able to filter and sort the tickets / events.
-7. A client, after an order has been placed, will recieve a confirmation.
