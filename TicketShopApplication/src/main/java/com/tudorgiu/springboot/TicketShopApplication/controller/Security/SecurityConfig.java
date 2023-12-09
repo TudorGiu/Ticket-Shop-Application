@@ -29,19 +29,19 @@ public class SecurityConfig {
                 configurer
                         .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
-        )
-                .formLogin(form ->
-                        form
-                                .loginPage("/loginPage")
-                                .loginProcessingUrl("/authenticate")
-                                .usernameParameter("email")
-                                .permitAll()
-                )
-                .logout(logout ->
-                            logout
-                                    .permitAll()
-                                    .logoutSuccessUrl("/")
-                );
+            )
+            .formLogin(form ->
+                form
+                        .loginPage("/loginPage")
+                        .loginProcessingUrl("/authenticate")
+                        .usernameParameter("email")
+                        .permitAll()
+            )
+            .logout(logout ->
+                logout
+                        .permitAll()
+                        .logoutSuccessUrl("/")
+            );
         return http.build();
     }
 }
