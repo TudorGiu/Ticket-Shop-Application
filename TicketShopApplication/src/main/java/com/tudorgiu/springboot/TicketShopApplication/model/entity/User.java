@@ -2,7 +2,9 @@ package com.tudorgiu.springboot.TicketShopApplication.model.entity;
 
 import jakarta.persistence.*;
 
-import java.util.function.BiPredicate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name="users")
@@ -28,21 +30,30 @@ public class User {
     @Column(name="password")
     private String password;
 
-    @Column(name="is_admin")
-    private Boolean isAdmin;
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id")
+    )
+    private List<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
 
     // required by JPA (implemented by Hibernate)
     public User(){
 
     }
 
-    public User(String firstName, String lastName, String email, int age, String password, Boolean isAdmin) {
+    public User(String firstName, String lastName, String email, int age, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.age = age;
         this.password = password;
-        this.isAdmin = isAdmin;
     }
 
     public int getId() {
@@ -93,12 +104,28 @@ public class User {
         this.password = password;
     }
 
-    public Boolean getAdmin() {
-        return isAdmin;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(Role role){
+        if(roles == null){
+            roles = new ArrayList<>();
+        }
+
+        this.roles.add(role);
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
     @Override
@@ -110,7 +137,8 @@ public class User {
                 ", email='" + email + '\'' +
                 ", age=" + age +
                 ", password='" + password + '\'' +
-                ", isAdmin=" + isAdmin +
+                ", roles=" + roles +
+                ", orders=" + orders +
                 '}';
     }
 }

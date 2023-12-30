@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
-  <title>Home page</title>
+  <title>Home</title>
+  <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+  <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>Welcome to Our Website</h1>
-    <a sec:authorize="!isAuthenticated()" th:href="@{/loginPage}">
-      <button>Login</button>
+
+<div class="global-header">
+
+  <h2 class="welcome-msg" sec:authorize="isAuthenticated()" th:text="'Hello, ' + ${#authentication.name} + '! You have the roles ' +  ${#authentication.authorities} + '.'"></h2>
+
+  <h1 class="title">Ticket Shop Application</h1>
+
+  <a sec:authorize="!isAuthenticated()" th:href="@{/users/loginPage}">
+    <button class="button position-logout-login">Login</button>
+  </a>
+
+  <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/orders}">
+    <button class="button position-orders">See Orders</button>
+  </a>
+
+  <a th:href="@{/basket/}" sec:authorize="isAuthenticated()">
+    <i class="fa badge fa-lg basket" th:value="${basketItemCount}">&#xf290;</i>
+  </a>
+
+
+  <form sec:authorize="isAuthenticated()" action="#" th:action="@{/logout}" method="POST">
+    <input class="button position-logout-login" type="submit" value="Logout"/>
+  </form>
+</div>
+
+<div style="background-color: #e0d7d3; height: 10px">
+</div>
+
+<div class="grid-container">
+  <div th:each="tempEvent : ${events}" class="grid-item" th:if="${tempEvent.active}">
+    <a th:href="@{/events/(eventId=${tempEvent.id})}">
+      <div class="grid-item-font" th:text="${tempEvent.title}"/>
     </a>
-  </header>
+    <a th:href="@{/events/(eventId=${tempEvent.id})}">
+      <img class="grid-item-image"  th:src="@{'data:image/jpeg;base64,'+${tempEvent.generateBase64Image()}}" />
+    </a>
 
-  <main>
-    <p>This is the content of the home page. Feel free to explore!</p>
+      <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/events/editEventPage(eventId=${tempEvent.id})}"><button class="button">Edit</button></a>
+      <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/events/delete(eventId=${tempEvent.id})}" onclick="if(!(confirm('Are you sure you want to delete this event?'))) return false"><button class="button">Delete</button></a>
+  </div>
+</div>
 
-      <form sec:authorize="isAuthenticated()" action="#" th:action="@{/logout}" method="POST">
-        <input type="submit" value="Logout"/>
-    </form>
-
-  </main>
+<a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/events/addNewEventPage}"><button class="button position-add">+</button></a>
 
 </body>
 </html>

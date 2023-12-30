@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml' xmlns:th='http://www.thymeleaf.org'>
+<head>
+  <title>Payment Processed</title>
+  <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+  <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="global-header">
+
+  <a th:href="@{/}" class="welcome-msg">Home</a>
+
+  <h1 class="title">Ticket Shop Application</h1>
+
+</div>
+
+<div style="background-color: #e0d7d3; height: 10px">
+</div>
+
+<div class="order-panel used-font">
+
+  <div class="status-panel">
+    <h3 th:if='${error}' th:text='${error}' style='color: red;'></h3>
+    <a style="display: grid" th:if='${error}' th:href="@{/basket/order}"><button style="place-self: center" class="button">Checkout again</button></a>
+    <h3 th:unless='${error}' style='color: green;'>Success!</h3>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Basket</title>
+    <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+    <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="global-header">
+
+    <a th:href="@{/}" class="welcome-msg">Home</a>
+
+    <h1 class="title">Ticket Shop Application</h1>
+
+    <a sec:authorize="!isAuthenticated()" th:href="@{/users/loginPage}">
+        <button class="button position-logout-login">Login</button>
+    </a>
+
+    <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/orders}">
+        <button class="button position-orders">See Orders</button>
+    </a>
+
+    <a th:href="@{/basket/}" sec:authorize="isAuthenticated()">
+        <i class="fa fa-lg basket" style="margin-right: 16px">&#xf290;</i>
+    </a>
+
+
+    <form sec:authorize="isAuthenticated()" action="#" th:action="@{/logout}" method="POST">
+        <input class="button position-logout-login" type="submit" value="Logout"/>
+    </form>
+
+</div>
+
+<div style="background-color: #e0d7d3; height: 10px">
+</div>
+
+
+<div class="basket-panel used-font">
+    <div>
+        <div class="my-basket-panel" style="font-size: 50px;">
+            MY BASKET
+        </div>
+
+        <div class="basket-ticket-list">
+            <span style="font-size: 30px">Ticket List:</span>
+            <br></br>
+            <ul>
+                <li th:each="entry : ${basketContent.entrySet()}">
+                    <span class="bullet" style="background-color: #e84a5f"></span>
+                    <span th:text="${entry.key.event.title + ' - ' + entry.key.name + ' - ' + entry.key.price + 'RON '}"></span>
+
+                    <a th:href="@{/basket/removeItem(ticketId=${entry.key.id})}">
+                        <button class="ticket-amount-button" th:if="${entry.value > 0}">-</button>
+                    </a>
+
+                    <span th:text="${entry.value}"></span>
+
+                    <a th:href="@{/basket/addItem(ticketId=${entry.key.id})}">
+                        <button class="ticket-amount-button">+</button>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="basket-panel-right">
+        <div>
+            <h2>Total Price:</h2>
+            <label th:text="${totalPrice}"></label>
+        </div>
+
+        <a th:href="@{/basket/order}" >
+            <button class="button" th:attr="disabled=${totalPrice == 0.0} ? 'disabled' : null">Proceed to Order</button>
+        </a>
+
+        <br></br>
+
+        <span th:if='${exceptionMsg}' th:text='${exceptionMsg}' style='color: red;'></span>
+
+    </div>
+</div>
+
+</body>
+</html>

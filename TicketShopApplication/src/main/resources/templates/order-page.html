@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+    <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+</head>
+
+
+<body>
+
+<div class="global-header">
+
+    <a th:href="@{/}" class="welcome-msg">Home</a>
+
+    <h1 class="title">Ticket Shop Application</h1>
+
+</div>
+
+<div style="background-color: #e0d7d3; height: 10px">
+</div>
+
+<div class="order-panel used-font">
+    <div class="order-smaller-panel">
+        <span style="font-size: 30px">Ticket List:</span>
+        <br></br>
+        <ul>
+            <li th:each="entry : ${basketContent.entrySet()}">
+                <span class="bullet" style="background-color: #e84a5f"></span>
+                <span th:text="${entry.key.event.title + ' - ' + entry.key.name + ' - ' + entry.key.price + 'RON '}"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="order-smaller-panel">
+        <form action="#" th:action="@{/basket/applyDiscount}" method="POST">
+
+            <div class="enter-discount-form">
+                <label for="discountCodeText">Enter Discount Code:</label>
+                <input type="text" id="discountCodeText" name="discountCodeText">
+            </div>
+
+            <ul>
+                <li th:each="entry : ${addedDiscountCodes}">
+                    <span th:text="${'Applyed code ' + entry.code + ' on ticket ' + entry.ticket.name + ' - ' + entry.discountProcent + '%'}"></span>
+                </li>
+            </ul>
+
+            <button class="button" type="submit">Apply</button>
+        </form>
+
+    </div>
+
+    <div class="order-smaller-panel">
+        <form th:action="@{/charge}" method='POST' id='checkout-form'>
+            <div class="enter-discount-form">
+                <input type='hidden' th:value='${totalPrice}' name='amount' />
+                <label>Total Price: <span th:text='${totalPrice}/100' />RON</label>
+                <!-- NOTE: data-key/data-amount/data-currency will be rendered by Thymeleaf -->
+                <script
+                        src='https://checkout.stripe.com/checkout.js'
+                        class='stripe-button'
+                        th:attr='data-key=${stripePublicKey}, data-amount=${totalPrice}'
+                        data-name='Stripe'
+                        data-description='Stripe API checkout'
+                        data-image='https://images.ctfassets.net/fzn2n1nzq965/HTTOloNPhisV9P4hlMPNA/cacf1bb88b9fc492dfad34378d844280/Stripe_icon_-_square.svg?q=80&w=1082'
+                        data-locale='auto'
+                        data-zip-code='false'
+                        data-currency="ron"
+                >
+                </script>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

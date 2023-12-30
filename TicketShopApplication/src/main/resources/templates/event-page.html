@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Event</title>
+    <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+    <link href="https://use.fontawesome.com/releases/v5.0.1/css/all.css" rel="stylesheet">
+</head>
+<body style="display: block">
+
+<div class="global-header">
+
+    <a th:href="@{/}" class="welcome-msg">Home</a>
+
+    <h1 class="title">Ticket Shop Application</h1>
+
+    <a sec:authorize="!isAuthenticated()" th:href="@{/users/loginPage}">
+        <button class="button position-logout-login">Login</button>
+    </a>
+
+    <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/orders}">
+        <button class="button position-orders">See Orders</button>
+    </a>
+
+    <a th:href="@{/basket/}" sec:authorize="isAuthenticated()">
+        <i class="fa badge fa-lg basket" th:value="${basketItemCount}">&#xf290;</i>
+    </a>
+
+    <form sec:authorize="isAuthenticated()" action="#" th:action="@{/logout}" method="POST">
+        <input class="button position-logout-login" type="submit" value="Logout"/>
+    </form>
+</div>
+
+<div style="background-color: #e0d7d3; height: 10px">
+</div>
+
+
+<div class="event-presentation-panel">
+    <div class="event-presentation-grid">
+        <img class="event-form-image" th:src="@{'data:image/jpeg;base64,' + ${event.generateBase64Image()}}" alt="Event Picture">
+        <div class="event-text-info">
+            <span style="font-size: 50px;" th:text="${event.title}"></span>
+            <p>📆  <span th:text="${#temporals.format(event.date, 'dd-MM-yyyy HH:mm')}"></span></p>
+            <p>🗺️  <span th:text="${event.location}"></span></p>
+            <br/>
+            <span th:text="${event.description}"></span>
+        </div>
+    </div>
+    <ul style="margin: 20px">
+        <li th:if="${ticket.active}" th:each="ticket : ${event.tickets}" style="margin-top: 20px">
+            <span class="bullet" style="background-color: #e84a5f"></span>
+            <span  class="used-font" th:text="${ticket.name + ' - ' + ticket.price + ' ron'}"></span>
+            <a sec:authorize="isAuthenticated()" th:href="@{/basket/addItem(ticketId=${ticket.id})}"><button class="button" th:if="${ticket.amount > 0}">Add to Basket</button></a>
+            <span class="used-font" style="font-weight: bold" th:if="${ticket.amount == 0}">SOLD OUT</span>
+            <a style="float: right; margin-left: 20px" sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/tickets/editTicketPage(eventId=${event.id},ticketId=${ticket.id})}"><button class="button">Edit</button></a>
+            <a style="float: right" sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/tickets/delete(eventId=${event.id},ticketId=${ticket.id})}" onclick="if(!(confirm('Are you sure you want to delete this type of ticket?'))) return false"><button class="button">Delete</button></a>
+        </li>
+       </ul>
+</div>
+
+<div style="width: 60%; margin:auto;">
+    <a style="float: right; margin: 20px" sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/tickets/addNewTicketPage(eventId=${event.id})}"><button class="button">+</button></a>
+</div>
+
+</body>
+</html>

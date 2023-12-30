@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit/New Discount Code</title>
+  <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+</head>
+<body class="body-of-login-form-page">
+
+<a th:href="@{/}" class="welcome-msg">Home</a>
+<a th:href="@{/tickets/editTicketPage(eventId=${eventId},ticketId=${ticketId})}" class="welcome-msg" style="top: 30px">Back</a>
+
+
+<div class="form-big-css">
+  <div class="form-title">
+    <div style="padding: 10px">
+      Discount Code Form
+    </div>
+  </div>
+  <form action="#" th:action="@{/tickets/saveDiscountCode(ticketId=${ticketId},eventId=${eventId})}" th:object="${discountCode}" method="POST">
+
+    <!--    EXTREMELY IMPORTANT TO BIND THE NEW MODEL TO THE OLD DISCOUNT CODE ID-->
+    <input type="hidden" th:field="*{id}">
+
+    <div class="form-column">
+      <label for="code">Discount Code:</label>
+      <input type="text" id="code" th:field="*{code}" required>
+    </div>
+
+    <div class="form-column">
+      <label for="discountProcent">Discount Procent:</label>
+      <input min="0" max="100" type="number" id="discountProcent" th:field="*{discountProcent}" required>
+    </div>
+    <div style="display: flex;margin: 10px;">
+      <button class="button" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+</head>
+<body class="body-of-login-form-page">
+
+<a th:href="@{/}" class="welcome-msg">Home</a>
+
+
+<div class="form-big-css">
+    <div class="form-title">
+        <div style="padding: 10px">
+            User Registration
+        </div>
+    </div>
+    <form action="#" th:action="@{/users/save}" th:object="${user}" method="POST">
+        <div class="form-column">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" th:field="*{firstName}" required>
+        </div>
+
+        <div class="form-column">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" th:field="*{lastName}" required>
+        </div>
+
+        <div class="form-column">
+            <label for="age">Age:</label>
+            <input type="number" style="width: 70px" id="age" th:field="*{age}" required>
+        </div>
+
+        <div class="form-row">
+            <div class="form-column">
+                <label for="email">Email:</label>
+                <input type="email" id="email" th:field="*{email}" required>
+            </div>
+
+            <div class="form-column">
+                <label for="password">Password:</label>
+                <input type="password" id="password" th:field="*{password}" required>
+            </div>
+        </div>
+
+        <div style="display: flex;margin: 10px;">
+            <button class="button" type="submit">Submit</button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

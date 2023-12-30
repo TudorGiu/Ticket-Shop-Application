@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit/New Event</title>
+    <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+</head>
+<body class="body-of-edit-event-page">
+
+<a th:href="@{/}" class="welcome-msg">Home</a>
+
+<div class="form-big-css">
+    <div class="form-title">
+        <div style="padding: 10px">
+            Event Form
+        </div>
+    </div>
+    <form action="#" th:action="@{/events/save}" th:object="${event}" method="POST" enctype="multipart/form-data">
+
+        <!--    EXTREMELY IMPORTANT TO BIND THE NEW MODEL TO THE OLD EVENT ID-->
+
+        <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{active}">
+
+         <div class="form-column">
+            <label for="title">Event Title:</label>
+            <input type="text" id="title" th:field="*{title}" required>
+         </div>
+
+        <div class="form-column">
+            <label for="date">Date and Time:</label>
+            <input type="datetime-local" id="date" th:field="*{date}" required>
+        </div>
+
+        <div class="form-column">
+            <label for="location">Location:</label>
+            <input type="text" id="location" th:field="*{location}" required>
+        </div>
+
+        <div class="form-column">
+            <label for="description">Description:</label>
+            <textarea type="text" id="description" th:field="*{description}" required/>
+        </div>
+
+        <div class="form-row">
+            <div class="form-column">
+                <label>Old Picture:</label>
+                <img class="event-form-image" th:src="@{'data:image/jpeg;base64,'+${event.generateBase64Image()}}" />
+            </div>
+
+            <div class="form-column" style="grid-template-rows: 1fr 12fr;">
+                <label>New Picture:</label>
+                <input type="file" id="image" name="image" accept="image/jpeg" onchange="checkFileSize(this)">
+            </div>
+
+       </div>
+
+        <div style="display: flex;margin: 10px;">
+            <button class="button" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+
+<script th:inline="javascript">
+    function checkFileSize(input) {
+
+        const maxFileSizeProperty = /*[[${@environment.getProperty('spring.servlet.multipart.max-file-size')}]]*/ null;
+        const maxFileSizeInBytes = parseInt(maxFileSizeProperty.substring(0, maxFileSizeProperty.length - 2)) * 1024 * 1024;
+
+        if (input.files.length > 0) {
+            const fileSize = input.files[0].size;
+
+            if (fileSize > maxFileSizeInBytes) {
+                alert("File size exceeds the maximum allowed size (" + maxFileSizeProperty + "). Please choose a smaller file.");
+                input.value = '';
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

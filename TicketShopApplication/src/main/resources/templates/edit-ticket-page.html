@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit/New Ticket</title>
+  <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+</head>
+
+<body class="used-font ticket-form-panel" style="margin: 0px; min-height: 100vh;">
+
+<a th:href="@{/}" class="welcome-msg">Home</a>
+<a th:href="@{/events/(eventId=${eventId})}" class="welcome-msg" style="top: 30px">Back</a>
+
+<div class="ticket-form-panel-smaller">
+
+  <div class="form-big-css" style="margin-right: 20px">
+    <div class="form-title">
+      <div style="padding: 10px">
+        Ticket Form
+      </div>
+    </div>
+
+    <form action="#" th:action="@{/tickets/save(eventId=${eventId})}" th:object="${ticket}" method="POST">
+
+      <!--    EXTREMELY IMPORTANT TO BIND THE NEW MODEL TO THE OLD TICKET ID-->
+      <input type="hidden" th:field="*{id}">
+      <input type="hidden" th:field="*{active}">
+
+      <div class="form-column">
+        <label for="name">Ticket Name:</label>
+        <input type="text" id="name" th:field="*{name}" required>
+      </div>
+
+      <div class="form-column">
+        <label for="price">Price:</label>
+        <input type="text" id="price" th:field="*{price}" required>
+      </div>
+
+      <div class="form-column">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" th:field="*{amount}" required>
+      </div>
+
+      <div style="display: flex;margin: 10px;">
+        <button class="button" type="submit">Submit</button>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="discount-list" th:if="${ticket.id}">
+    <h2>Active Discount Codes:</h2>
+    <ul>
+      <li class="discount-list-line" th:each="discCode : ${ticket.discountCodes}">
+        <span class="bullet" style="background-color: #e84a5f"></span>
+        <span th:text="${discCode.code + ' - ' + discCode.discountProcent + '%'}"></span>
+
+        <a style="float: right; margin-left: 20px" sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/tickets/editDiscountCodePage(discountCodeId=${discCode.id},ticketId=${ticket.id},eventId=${eventId})}"><button class="button">Edit</button></a>
+        <a style="float: right;" sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/tickets/deleteDiscountCode(discountCodeId=${discCode.id},ticketId=${ticket.id})}" onclick="if(!(confirm('Are you sure you want to delete this discount code?'))) return false"><button class="button">Delete</button></a>
+
+      </li>
+    </ul>
+
+    <a sec:authorize="hasRole('ROLE_ADMINISTRATOR')" th:href="@{/tickets/addNewDiscountCodePage(ticketId=${ticket.id},eventId=${eventId})}"><button class="button discount-list-add-btn">+</button></a>
+  </div>
+</div>
+
+
+</body>
+</html>

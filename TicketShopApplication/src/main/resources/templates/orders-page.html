@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Orders</title>
+  <link rel="stylesheet" th:href="@{/css/demo.css}"/>
+</head>
+<body style="display: grid; justify-items: stretch">
+
+<a th:href="@{/}" class="welcome-msg">Home</a>
+<br>
+<div class="orders-title">Orders</div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Id</th>
+      <th>User First Name</th>
+      <th>User Last Name</th>
+      <th>User Email</th>
+      <th>User Age</th>
+      <th>List of Tickets Bought</th>
+      <th>Order Date</th>
+      <th>Order Cost</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="tempOrder : ${orders}">
+      <td th:text="${tempOrder.id}" />
+      <td th:text="${tempOrder.user.firstName}"/>
+      <td th:text="${tempOrder.user.lastName}"/>
+      <td th:text="${tempOrder.user.email}"/>
+      <td th:text="${tempOrder.user.age}"/>
+      <td>
+        <ul>
+          <li th:each="tempOrderTicket : ${tempOrder.orderTickets}">
+            <span th:text="${'Ticket ' + tempOrderTicket.ticket.name + ' - amount: ' + tempOrderTicket.amount}"/>
+          </li>
+        </ul>
+      </td>
+      <td th:text="${#temporals.format(tempOrder.date, 'dd-MM-yyyy HH:mm:ss')}"/>
+      <td th:text="${tempOrder.totalPrice}"/>
+    </tr>
+    </tbody>
+  </table>
+
+
+</body>
+</html>
