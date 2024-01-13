@@ -3,11 +3,9 @@ package com.tudorgiu.springboot.TicketShopApplication.controller.actualcontrolle
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
 import com.tudorgiu.springboot.TicketShopApplication.controller.service.*;
+import com.tudorgiu.springboot.TicketShopApplication.model.builder.OrderBuilder;
 import com.tudorgiu.springboot.TicketShopApplication.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -16,9 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Controller
 public class MainController {
@@ -87,10 +83,11 @@ public class MainController {
             activeUserEmail = ((User) authentication.getPrincipal()).getUsername();
 
             // Create a new order
-            Order newOrder = new Order();
-            newOrder.setUser(userService.getByEmail(activeUserEmail));
-            newOrder.setDate(LocalDateTime.now());
-            newOrder.setTotalPrice(basketService.getTotalPriceDiscounted());
+            Order newOrder = new OrderBuilder()
+                    .withUser(userService.getByEmail(activeUserEmail))
+                    .withDate(LocalDateTime.now())
+                    .withTotalPrice(basketService.getTotalPriceDiscounted())
+                    .build();
 
             orderService.save(newOrder);
 
