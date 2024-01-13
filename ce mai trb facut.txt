@@ -1,0 +1,5 @@
+buglist
+comentarii in source code
+schimba pozele si diagrama claselor in PPT
+adauga chestii la documentatie
+fa un design pattern
