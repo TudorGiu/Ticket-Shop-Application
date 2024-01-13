@@ -40,6 +40,9 @@
     font-family: "Open Sans", sans-serif;
     font-size: 24px;
     font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 a {
@@ -47,12 +50,12 @@ a {
     color: inherit; /* Use the default text color */
 }
 
+
 .button{
     display: inline-block;
     outline: none;
     cursor: pointer;
     font-weight: 500;
-    border-radius: 3px;
     padding: 0 16px;
     border-radius: 4px;
     color: #fff;

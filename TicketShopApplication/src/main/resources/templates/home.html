@@ -38,9 +38,9 @@
 
 <div class="grid-container">
   <div th:each="tempEvent : ${events}" class="grid-item" th:if="${tempEvent.active}">
-    <a th:href="@{/events/(eventId=${tempEvent.id})}">
-      <div class="grid-item-font" th:text="${tempEvent.title}"/>
-    </a>
+      <a th:href="@{/events/(eventId=${tempEvent.id})}">
+        <div class="grid-item-font" th:text="${tempEvent.title}"></div>
+      </a>
     <a th:href="@{/events/(eventId=${tempEvent.id})}">
       <img class="grid-item-image"  th:src="@{'data:image/jpeg;base64,'+${tempEvent.generateBase64Image()}}" />
     </a>

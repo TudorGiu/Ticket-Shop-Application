@@ -30,6 +30,7 @@ public class BasketController {
     private DiscountCodeService discountCodeService;
     private UserService userService;
 
+    // Constructor injection of services
     public BasketController(BasketService basketService, TicketService ticketService, DiscountCodeService discountCodeService, UserService userService) {
         this.basketService = basketService;
         this.ticketService = ticketService;
@@ -37,21 +38,24 @@ public class BasketController {
         this.userService = userService;
     }
 
+    // Show the basket page
     @GetMapping("/")
     public String showBasketPage(Model model, @RequestParam Optional<String> exceptionMsg){
 
         if(exceptionMsg.isPresent())
             model.addAttribute("exceptionMsg", exceptionMsg.get());
 
+        // Get basket content and total price
         Map<Ticket, Integer> basketContent = basketService.getTickets();
-
         float totalPrice = basketService.getTotalPriceNoDiscount();
 
+        // Add attributes to the model
         model.addAttribute("basketContent", basketContent).addAttribute("totalPrice", totalPrice);
 
         return "basket-page";
     }
 
+    // Add item to the basket
     @GetMapping("/addItem")
     public String addItemToBasket(@RequestParam("ticketId") int id, HttpServletRequest request ){
         basketService.addTicket(ticketService.findById(id));
@@ -61,6 +65,7 @@ public class BasketController {
         return "redirect:" + referer;
     }
 
+    // Remove item from the basket
     @GetMapping("/removeItem")
     public String removeItemFromBasket(@RequestParam("ticketId") int id, HttpServletRequest request ){
         basketService.removeTicket(ticketService.findById(id));
@@ -70,10 +75,11 @@ public class BasketController {
         return "redirect:" + referer;
     }
 
+    // View order and check ticket availability
     @GetMapping("/order")
     public String viewOrder(Model model){
 
-        // check if there are enough tickets in the database
+        // Check if there are enough tickets in the database
         for(Map.Entry<Ticket, Integer> entry : basketService.getTickets().entrySet()){
             if(ticketService.findById(entry.getKey().getId()).getAmount() < entry.getValue())
             {
@@ -87,6 +93,7 @@ public class BasketController {
 
         int roundedTotalPriceInBani = Math.round(basketService.getTotalPriceDiscounted()*100);
 
+        // Add attributes to the model for the order page
         model.addAttribute("stripePublicKey", stripePublicKey)
                 .addAttribute("basketContent", basketService.getTickets())
                 .addAttribute("totalPrice", roundedTotalPriceInBani)
@@ -95,11 +102,13 @@ public class BasketController {
         return "order-page";
     }
 
+    // Apply discount to the basket
     @PostMapping("/applyDiscount")
     public RedirectView applyDiscount(@RequestParam("discountCodeText") String discountCodeText){
 
         List<DiscountCode> discountCodes = discountCodeService.findByCode(discountCodeText);
 
+        // Check if the discount code has already been added
         boolean alreadyAdded = false;
 
         for(DiscountCode discountCodePivot : basketService.getAddedDiscountCodes())
@@ -108,7 +117,8 @@ public class BasketController {
                 break;
             }
 
-        if(alreadyAdded == false)
+        // If the discount code is not already added, check and add valid codes
+        if(!alreadyAdded)
             for(DiscountCode discountCodePivot: discountCodes)
                 for(Ticket ticketPivot: basketService.getTicketsAsList())
                     if(discountCodePivot.getTicket().getId() == ticketPivot.getId())

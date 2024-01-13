@@ -29,6 +29,12 @@ public class OrderTicketId implements Serializable {
         this.ticket = ticket;
     }
 
+    /**
+     * Overrides the equals method to compare two OrderTicketId objects for equality.
+     *
+     * @param o The object to compare with this OrderTicketId.
+     * @return true if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

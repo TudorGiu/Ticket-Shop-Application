@@ -37,6 +37,7 @@ public class MainController {
     @Autowired
     private TicketService ticketService;
 
+    // Constructor injection of services
     public MainController(EventService eventService, BasketService basketService, OrderService orderService, UserService userService) {
         this.eventService = eventService;
         this.basketService = basketService;
@@ -44,6 +45,7 @@ public class MainController {
         this.userService = userService;
     }
 
+    // Show the home page with a list of events and basket item count
     @GetMapping("/")
     public String showHomePage(Model model) {
 
@@ -55,6 +57,7 @@ public class MainController {
         return "home";
     }
 
+    // Show the orders page with a list of all orders
     @GetMapping("/orders")
     public String showOrdersPage(Model model){
 
@@ -64,22 +67,26 @@ public class MainController {
 
         return "orders-page";
     }
+
+    // Handle the charge (payment) process
     @PostMapping("/charge")
     public String charge(ChargeRequest chargeRequest, Model model) throws StripeException {
 
-        // payment part
+        // Payment part
         chargeRequest.setDescription("Example charge");
         chargeRequest.setCurrency(ChargeRequest.Currency.RON);
         Charge charge = paymentsService.charge(chargeRequest);
 
-        // order part
+        // Order part
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String activeUserEmail = null;
 
+        // Get the active user's email
         if(authentication.getPrincipal() instanceof User) {
             activeUserEmail = ((User) authentication.getPrincipal()).getUsername();
 
+            // Create a new order
             Order newOrder = new Order();
             newOrder.setUser(userService.getByEmail(activeUserEmail));
             newOrder.setDate(LocalDateTime.now());
@@ -87,6 +94,7 @@ public class MainController {
 
             orderService.save(newOrder);
 
+            // Iterate through tickets in the basket and create order tickets
             for(Ticket t : basketService.getTicketsAsList()){
                 OrderTicket ot = new OrderTicket();
                 ot.setTicket(t);
@@ -94,17 +102,18 @@ public class MainController {
                 ot.setOrder(newOrder);
                 orderTicketService.save(ot);
 
-                // reducing each of the ticket's amount
+                // Reduce each ticket's amount
                 t.setAmount(t.getAmount()-basketService.getTickets().get(t));
                 ticketService.save(t);
             }
 
 
-            // emptying the basket
+            // Empty the basket and added discount codes
             basketService.getTickets().clear();
             basketService.getAddedDiscountCodes().clear();
         }
 
+        // Add charge details to the model
         model.addAttribute("id", charge.getId());
         model.addAttribute("status", charge.getStatus());
         model.addAttribute("chargeId", charge.getId());
@@ -112,6 +121,7 @@ public class MainController {
         return "payment-end-page";
     }
 
+    // Handle StripeException errors
     @ExceptionHandler(StripeException.class)
     public String handleError(Model model, StripeException ex) {
         model.addAttribute("error", ex.getMessage());

@@ -30,7 +30,11 @@ public class UserService {
     }
 
     public void save(User newUser) {
+
+        // Encode the user's password before saving
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+
+        // Set the user's role (assumes role with ID 1 exists)
         int id = 1;
 
         try {
@@ -39,17 +43,21 @@ public class UserService {
             throw new NoSuchElementException("Role with id " + id + " not found.");
         }
 
+        // Save the user
         userRepository.save(newUser);
     }
 
     public User getByEmail(String email){
 
+        // Retrieve a list of all users
         List<User> users = userRepository.findAll();
 
+        // Iterate through the list of users to find the one with the specified email
         for(User userPivot : userRepository.findAll())
             if(userPivot.getEmail().equals(email))
                 return userPivot;
 
+        // Throw an exception if no user is found with the given email
         throw new NoSuchElementException("User with email " + email + " does not exist.");
     }
 }

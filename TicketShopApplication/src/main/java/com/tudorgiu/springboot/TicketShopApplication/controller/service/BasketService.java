@@ -15,8 +15,10 @@ import java.util.*;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 @Transactional
 public class BasketService {
+    // Map to store tickets and their quantities in the basket
     private Map<Ticket, Integer> tickets = new HashMap<>();
 
+    // List to store added discount codes
     private List<DiscountCode> addedDiscountCodes = new ArrayList<>();
 
     public List<DiscountCode> getAddedDiscountCodes() {
@@ -27,6 +29,7 @@ public class BasketService {
         return tickets;
     }
 
+    // Method to add a ticket to the basket
     public void addTicket(Ticket ticket){
         boolean exists = false;
         for (Ticket pivot : tickets.keySet()) {
@@ -43,6 +46,7 @@ public class BasketService {
         }
     }
 
+    // Method to remove a ticket from the basket
     public void removeTicket(Ticket ticket){
         boolean exists = false;
         for (Ticket pivot : tickets.keySet()) {
@@ -63,6 +67,7 @@ public class BasketService {
         }
     }
 
+    // Method to get the total count of items in the basket
     public int getBasketItemCount(){
         int itemCount = 0;
 
@@ -72,6 +77,8 @@ public class BasketService {
 
         return itemCount;
     }
+
+    // Method to calculate the total price without discounts
     public float getTotalPriceNoDiscount(){
         float sum = 0;
         for(Ticket pivot : this.tickets.keySet()){
@@ -80,6 +87,7 @@ public class BasketService {
         return  sum;
     }
 
+    // Method to calculate the total price with applied discounts
     public float getTotalPriceDiscounted(){
 
         float totalPrice = this.getTotalPriceNoDiscount();
@@ -91,6 +99,7 @@ public class BasketService {
         return totalPrice;
     }
 
+    // Method to convert the basket tickets to a list
     public List<Ticket> getTicketsAsList(){
         return new ArrayList<>(tickets.keySet());
     }

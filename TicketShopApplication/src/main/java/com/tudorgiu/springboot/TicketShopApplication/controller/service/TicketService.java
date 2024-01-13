@@ -20,6 +20,13 @@ public class TicketService {
         this.ticketRepository = ticketRepository;
     }
 
+    /**
+     * Retrieve a ticket by its ID.
+     *
+     * @param id The ID of the ticket to retrieve.
+     * @return The Ticket object associated with the provided ID.
+     * @throws NoSuchElementException If no ticket is found with the given ID.
+     */
     public Ticket findById(int id){
 
         Optional<Ticket> returnedValue = ticketRepository.findById(id);
@@ -36,6 +43,13 @@ public class TicketService {
     public void save(Ticket ticket){
         ticketRepository.save(ticket);
     }
+
+    /**
+     * Soft delete a ticket by setting its 'active' status to false.
+     *
+     * @param id The ID of the ticket to delete.
+     * @throws NoSuchElementException If no ticket is found with the given ID.
+     */
     public void deleteById(int id){
         Optional<Ticket> ticketInCause = ticketRepository.findById(id);
 

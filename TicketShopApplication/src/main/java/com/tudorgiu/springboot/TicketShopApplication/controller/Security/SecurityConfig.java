@@ -14,15 +14,18 @@ import javax.sql.DataSource;
 @Configuration
 public class SecurityConfig {
 
+    // Bean for providing password encoding functionality
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Bean for managing user details using JDBC
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource){
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
 
+        // Set SQL queries for retrieving user details and authorities
         jdbcUserDetailsManager.setUsersByUsernameQuery(
                 "SELECT email, password,'true' from users where email=?");
 
@@ -32,13 +35,18 @@ public class SecurityConfig {
         return jdbcUserDetailsManager;
     }
 
+    // Bean for defining security filter chain configuration
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        // Configure security rules
         http.authorizeHttpRequests(configurer ->
                 configurer
+                        // Permit access to specified paths without authentication
                         .requestMatchers("/","/css/**","/users/registerPage","/users/save","/events/").permitAll()
+                        // Require authentication for any other request
                         .anyRequest().authenticated()
             )
+            // Configure form-based login
             .formLogin(form ->
                 form
                         .loginPage("/users/loginPage")
@@ -46,11 +54,15 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .permitAll()
             )
+            // Configure logout
             .logout(logout ->
                 logout
+                        // Permit all users to access the logout URL
                         .permitAll()
                         .logoutSuccessUrl("/")
             );
+
+        // Build and return the configured security filter chain
         return http.build();
     }
 
